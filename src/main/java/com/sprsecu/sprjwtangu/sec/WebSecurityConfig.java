@@ -36,15 +36,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         /*
         auth.inMemoryAuthentication()
         .withUser("admin").password("password").roles("ADMIN","USER");//*/
-        try {
-            System.out.println("Before auth.userDetailsService!!!!!");
+        System.out.println("Before auth.userDetailsService!!!!!");
+        Logger.getLogger("Before auth.userDetailsService!!!!! - By Logger");
+        try {        
             auth.userDetailsService(userDetailsService)
                     .passwordEncoder(bCryptPasswordEncoder);
-            System.out.println("Password is good!!!!!");
         } catch (Exception ex) {
             System.out.println("Password is wrong!!!!!");
             Logger.getLogger(WebSecurityConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Logger.getLogger("After auth.userDetailsService!!!!! - By Logger");
+        System.out.println("Password is good!!!!!");
     }
     
     @Override
@@ -56,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //
         
-        http.authorizeRequests().antMatchers("/login/**", "/register/**").permitAll();
+        http.authorizeRequests().antMatchers("/login/**", "/register/**", "/h2-console/**").permitAll();
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/tasks/**").hasAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated(); 
         
